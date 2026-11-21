@@ -1,0 +1,58 @@
+# Setup and controls
+
+## Hardware and tools
+
+- Keil MCB1700 board populated with an NXP LPC1768.
+- On-board color LCD, five-way joystick, potentiometer, and speaker.
+- Keil MDK / uVision and Arm Compiler 5. The saved project selects V5.06 update 6 (build 750).
+- Keil LPC1700_DFP 2.6.0 device support, as recorded in the project.
+- Compatible ULINK debug connection.
+
+The project uses compiler-specific startup and CMSIS support. It has not been migrated to Arm Compiler 6 or a GCC build. A compatible licensed Keil installation may be required depending on the installed edition's code-size limits.
+
+## Build
+
+Open `firmware/MediaCenter.uvprojx`, select `MediaCenter`, and build. Keep the source files together in `firmware/` because the project uses local include paths and `DMA.sct` for memory layout. Despite the scatter file's historical name, USB DMA is disabled in the current configuration.
+
+The project configures the LPC1768, 512 KB flash, and a 32 KB main RAM region. The audio ring buffer contains 1,024 16-bit samples. The three 160 x 120 RGB565 gallery images occupy 115,200 bytes of pixel data in constant storage.
+
+Download using the project's ULINK configuration and run on the board. Generated objects, listings, binaries, and per-user debugger settings are excluded from version control.
+
+## Controls
+
+| Screen | Control | Action |
+| --- | --- | --- |
+| Menu | Up / Down | Choose a feature |
+| Menu | Centre | Open the selection |
+| Gallery | Left / Right | Browse images |
+| Any feature | Centre | Return to the menu |
+| Lunar Lander | Up | Apply thrust |
+| Lunar Lander | Left / Right | Change horizontal velocity |
+| Robot Rescue | Directions | Move one grid cell |
+| Level-clear screen | Right | Advance to level 2 |
+| Final result or failure | Right | Restart from level 1 |
+| Audio | Potentiometer | Counterclockwise increases volume, clockwise decreases it |
+| Audio | Right | Toggle the local speaker test |
+| Audio | Left | Retry USB initialization |
+
+## Input and timing
+
+Joystick switches are active low on GPIO1. The application maps P1.23 to Up, P1.25 to Down, P1.24 to Right, P1.26 to Left, and P1.20 to Centre. Input must remain stable for 25 ms before a new press is accepted.
+
+Games use nominal 50 ms updates. A held direction drives gameplay while new press events drive menu and result-screen actions. Drawing occurs in the foreground. SysTick supplies milliseconds, and Timer 0 handles audio samples at a configured 32 kHz rate.
+
+## Audio limitation
+
+The intended USB format is 32 kHz mono 16-bit PCM. Playback and compressed-audio decoding would take place on the host PC. The board-side code provides sample buffering, host mute/volume requests, ADC-controlled gain, and DAC output.
+
+The local test tone and volume adjustment worked on the board. USB enumeration and PC streaming did not. A successful build or audible test tone should not be treated as proof of USB playback. Testing after a successful connection, including host-observed disconnect on exit, remains outstanding.
+
+## Reproducing the board demonstration
+
+1. Open and browse all three gallery images, then return to the menu.
+2. Play Lunar Lander through both levels and observe a hard landing as well as a successful landing.
+3. Play Robot Rescue through both maps, collect supplies, and observe completion and damage-related failure screens.
+4. Open audio, toggle the test tone, adjust the potentiometer, and return to the menu.
+5. Treat USB enumeration as an unresolved investigation rather than an expected working demo.
+
+The photos in `docs/images/` record the original board trials. They show different runs, so displayed scores are not a single continuous playthrough.

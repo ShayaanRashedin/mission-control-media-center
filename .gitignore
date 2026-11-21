@@ -1,0 +1,33 @@
+# Keil generated output
+Objects/
+Listings/
+**/Objects/
+**/Listings/
+*.axf
+*.elf
+*.hex
+*.bin
+*.o
+*.obj
+*.d
+*.crf
+*.lnp
+*.map
+*.lst
+*.htm
+*.build_log.htm
+
+# Per-user IDE and debugger state
+*.uvguix.*
+*.uvoptx
+*.uvopt
+*.uvgui.*
+*.bak
+*.dep
+*.iex
+*.sfr
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/

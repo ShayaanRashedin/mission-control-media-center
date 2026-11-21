@@ -1,0 +1,10 @@
+; Flash and RAM layout.
+LR_IROM1 0x00000000 0x00080000 {
+  ER_IROM1 0x00000000 {
+    *.o (RESET, +First)
+    * (+RO)
+  }
+  RW_IRAM1 0x10000000 0x00008000 {
+    * (+RW +ZI)
+  }
+}
