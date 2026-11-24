@@ -1,6 +1,6 @@
 # Mission Control Media Center
 
-**Embedded C | ARM Cortex-M3 | GPIO | ADC/DAC | Interrupts | Finite-State Machines**
+**Embedded C | ARM Cortex-M3 | USB Audio | GPIO | ADC/DAC | Interrupts | Finite-State Machines**
 
 A space-themed embedded media center running on the **Keil MCB1700 / NXP LPC1768**. A joystick-controlled LCD interface combines a photo gallery, two animated two-level games, and an audio interface in one bare-metal application.
 
@@ -11,7 +11,7 @@ Built for **COE718: Embedded Systems Design at Toronto Metropolitan University**
 - **Two playable games:** Lunar Lander and Robot Rescue, each with two levels, cumulative scoring, and success/failure screens.
 - **Hardware integration:** five-way joystick, color LCD, potentiometer, timer-driven DAC output, and the on-board speaker.
 - **Predictable control flow:** a foreground state machine, debounced input, and nominal 50 ms game updates.
-- **Practical debugging:** a local speaker test separates the working audio-output path from the unresolved USB connection.
+- **Working USB audio:** PC audio streams over USB and plays through the on-board speaker. A separate local test tone checks the speaker path independently.
 
 | Lunar Lander on the board | Robot Rescue on the board |
 | --- | --- |
@@ -31,7 +31,7 @@ Navigate a 16 x 9 maze, collect four supplies, and reach the dock before the bat
 
 ### Photo gallery and audio interface
 
-Browse three RGB565 space images using the joystick. In the audio interface, the potentiometer controls volume and a local 440 Hz test tone exercises the speaker output path. USB audio support is integrated, but PC-to-board streaming was not successfully demonstrated.
+Browse three RGB565 space images using the joystick. In the audio interface, the potentiometer controls volume and a local 440 Hz test tone exercises the speaker output path. PC-to-board USB audio playback was verified on the MCB1700.
 
 ## Engineering skills demonstrated
 
@@ -62,10 +62,10 @@ The game loop drops excess delay instead of running a burst of catch-up frames. 
 | Three-image gallery | Displayed and browsed on the LCD |
 | Both levels of both games | Played on the board, with completion and failure results photographed |
 | Local speaker tone and potentiometer volume | Audible output and volume adjustment confirmed on the board |
-| USB PC audio streaming | Incomplete: host enumeration failed |
-| USB disconnect after a successful stream | Not verified because enumeration did not succeed |
+| USB PC audio streaming | Verified: PC audio played through the MCB1700's on-board speaker |
+| USB disconnect and reconnect | Not verified as part of the playback check |
 
-USB troubleshooting also used a separate build based on the course USB Audio example, which failed to enumerate in the available setup. The observed errors do not establish a single root cause. The board receives PCM in the intended design. It does not decode MP3 files locally.
+The PC decodes compressed audio and sends PCM samples over USB. The board buffers the incoming samples and plays them through its timer-driven DAC and speaker.
 
 High scores are stored in RAM and reset when the board resets.
 

@@ -41,18 +41,18 @@ Joystick switches are active low on GPIO1. The application maps P1.23 to Up, P1.
 
 Games use nominal 50 ms updates. A held direction drives gameplay while new press events drive menu and result-screen actions. Drawing occurs in the foreground. SysTick supplies milliseconds, and Timer 0 handles audio samples at a configured 32 kHz rate.
 
-## Audio limitation
+## USB audio playback
 
-The intended USB format is 32 kHz mono 16-bit PCM. Playback and compressed-audio decoding would take place on the host PC. The board-side code provides sample buffering, host mute/volume requests, ADC-controlled gain, and DAC output.
+The configured USB audio format is 32 kHz mono 16-bit PCM. The host PC decodes compressed audio and sends PCM samples to the board. The board-side code provides sample buffering, host mute/volume requests, ADC-controlled gain, and DAC output.
 
-The local test tone and volume adjustment worked on the board. USB enumeration and PC streaming did not. A successful build or audible test tone should not be treated as proof of USB playback. Testing after a successful connection, including host-observed disconnect on exit, remains outstanding.
+PC-to-board USB audio playback was verified through the on-board speaker. The separate local test tone and potentiometer adjustment were also verified. Host-observed disconnect and reconnect behaviour was outside the playback check.
 
 ## Reproducing the board demonstration
 
 1. Open and browse all three gallery images, then return to the menu.
 2. Play Lunar Lander through both levels and observe a hard landing as well as a successful landing.
 3. Play Robot Rescue through both maps, collect supplies, and observe completion and damage-related failure screens.
-4. Open audio, toggle the test tone, adjust the potentiometer, and return to the menu.
-5. Treat USB enumeration as an unresolved investigation rather than an expected working demo.
+4. Open the Audio screen. Toggle the local test tone and adjust the potentiometer to check the speaker path, then turn the tone off.
+5. Connect the board to the PC via its USB device port. Select the board as the PC's audio output and play audio. Confirm the PC audio is audible through the board's speaker.
 
 The photos in `docs/images/` record the original board trials. They show different runs, so displayed scores are not a single continuous playthrough.
